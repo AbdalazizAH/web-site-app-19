@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { addToCart } from "./components/card";
 import LoadingSpinner from "../components/shared/LoadingSpinner";
 import Image from "next/image";
+import ProductsLoadingSpinner from "../components/shared/ProductsLoadingSpinner";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -105,9 +106,7 @@ export default function ProductsPage() {
 
         {/* قسم المنتجات */}
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <LoadingSpinner size="large" />
-          </div>
+          <ProductsLoadingSpinner />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.map((product) => (

@@ -1,13 +1,23 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ProductCard({ product }) {
   const [imageError, setImageError] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isImageLoading) {
+        setImageError(true);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [isImageLoading]);
 
   return (
     <article className="card group">
-      {/* صورة المنتج */}
       <div className="relative h-64 overflow-hidden bg-gray-100">
         {product.images && product.images[0] && !imageError ? (
           <Image
@@ -16,6 +26,7 @@ export default function ProductCard({ product }) {
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             onError={() => setImageError(true)}
+            onLoadingComplete={() => setIsImageLoading(false)}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             priority={false}
             loading="lazy"
@@ -26,7 +37,6 @@ export default function ProductCard({ product }) {
           </div>
         )}
       </div>
-
       {/* ... باقي الكود ... */}
     </article>
   );

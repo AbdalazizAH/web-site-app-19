@@ -79,14 +79,9 @@ export default function CartDisplay() {
     try {
       setCheckoutLoading(true);
 
-      if (
-        !checkoutData.CustomerName ||
-        !checkoutData.CustomerPhone ||
-        !checkoutData.Address
-      ) {
-        throw new Error("يرجى ملء جميع الحقول المطلوبة");
+      if (!cart?.Items?.length) {
+        throw new Error("السلة فارغة");
       }
-
       const res = await fetch("/api/cart/checkout", {
         method: "POST",
         headers: {
@@ -105,7 +100,7 @@ export default function CartDisplay() {
         throw new Error(errorData.error || "فشل في إتمام عملية الشراء");
       }
 
-      const data = await res.json();
+      await res.json();
 
       setIsOpen(false);
       setIsCheckingOut(false);
@@ -293,7 +288,11 @@ export default function CartDisplay() {
                             type="text"
                             placeholder="الاسم الكامل *"
                             required
-                            className="w-full p-2 border rounded"
+                            minLength={3}
+                            maxLength={50}
+                            pattern="^[\u0600-\u06FF\s]+$"
+                            title="الرجاء إدخال اسم صحيح باللغة العربية"
+                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={checkoutData.CustomerName}
                             onChange={(e) =>
                               setCheckoutData({
@@ -306,7 +305,9 @@ export default function CartDisplay() {
                             type="tel"
                             placeholder="رقم الهاتف *"
                             required
-                            className="w-full p-2 border rounded"
+                            pattern="^[0-9]{10}$"
+                            title="الرجاء إدخال رقم هاتف صحيح مكون من 10 أرقام"
+                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={checkoutData.CustomerPhone}
                             onChange={(e) =>
                               setCheckoutData({
@@ -317,8 +318,10 @@ export default function CartDisplay() {
                           />
                           <input
                             type="email"
-                            placeholder="البريد الإلكتروني"
-                            className="w-full p-2 border rounded"
+                            placeholder="البريد الإلكتروني (اختياري)"
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                            title="الرجاء إدخال بريد إلكتروني صحيح"
+                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={checkoutData.Email}
                             onChange={(e) =>
                               setCheckoutData({
@@ -327,11 +330,12 @@ export default function CartDisplay() {
                               })
                             }
                           />
-                          <input
-                            type="text"
+                          <textarea
                             placeholder="العنوان *"
                             required
-                            className="w-full p-2 border rounded"
+                            minLength={10}
+                            maxLength={200}
+                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={checkoutData.Address}
                             onChange={(e) =>
                               setCheckoutData({
@@ -343,7 +347,7 @@ export default function CartDisplay() {
                           <input
                             type="text"
                             placeholder="المدينة"
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={checkoutData.City}
                             onChange={(e) =>
                               setCheckoutData({
@@ -354,7 +358,8 @@ export default function CartDisplay() {
                           />
                           <textarea
                             placeholder="ملاحظات إضافية"
-                            className="w-full p-2 border rounded"
+                            maxLength={500}
+                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             value={checkoutData.Notes}
                             onChange={(e) =>
                               setCheckoutData({

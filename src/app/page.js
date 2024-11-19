@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import LoadingSpinner from "./components/shared/LoadingSpinner";
+import ProductsLoadingSpinner from "./components/shared/ProductsLoadingSpinner";
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -18,7 +18,6 @@ export default function Home() {
         headers: { accept: "application/json" },
       });
       const data = await res.json();
-      // نأخذ أول 3 منتجات كمنتجات مميزة
       setFeaturedProducts(data.slice(0, 3));
     } finally {
       setLoading(false);
@@ -64,9 +63,7 @@ export default function Home() {
           </div>
 
           {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <LoadingSpinner size="large" />
-            </div>
+            <ProductsLoadingSpinner />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {featuredProducts.map((product) => (
